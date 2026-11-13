@@ -10,6 +10,9 @@ async function buildApi() {
     target: 'node20',
     format: 'esm',
     outfile: 'api/index.js',
+    banner: {
+      js: `import { createRequire } from 'node:module'; const require = createRequire(import.meta.url);`,
+    },
     external: [
       ...builtinModules,
       ...builtinModules.map((m) => `node:${m}`),
@@ -20,7 +23,7 @@ async function buildApi() {
     sourcemap: false,
     minify: false,
   });
-  console.log('api/index.js bundled successfully!');
+  console.log('api/index.js bundled successfully with createRequire banner!');
 }
 
 buildApi().catch((err) => {
