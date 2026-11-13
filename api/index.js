@@ -32800,11 +32800,8 @@ if (!process.env.VERCEL) {
     process.exit(1);
   });
 }
-
-// api/index.ts
-var index_default = server_default;
 export {
-  index_default as default
+  server_default as default
 };
 /*! Bundled license information:
 

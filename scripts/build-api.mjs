@@ -2,9 +2,9 @@ import { builtinModules } from 'node:module';
 import esbuild from 'esbuild';
 
 async function buildApi() {
-  console.log('Bundling api/index.ts for Vercel serverless...');
+  console.log('Bundling server.ts into api/index.js for Vercel...');
   await esbuild.build({
-    entryPoints: ['api/index.ts'],
+    entryPoints: ['server.ts'],
     bundle: true,
     platform: 'node',
     target: 'node20',
