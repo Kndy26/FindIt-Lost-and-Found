@@ -1,6 +1,3 @@
-import dotenv from 'dotenv';
-dotenv.config();
-dotenv.config({ path: '.env.local', override: true });
 import { count } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';

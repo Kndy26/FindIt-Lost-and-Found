@@ -1,8 +1,30 @@
-import dotenv from 'dotenv';
-dotenv.config();
-dotenv.config({ path: '.env.local', override: true });
+import fs from 'node:fs';
 import path from 'node:path';
 import express from 'express';
+
+// Load .env secara native tanpa dependensi CommonJS yang membuat bundler ESM error
+if (!process.env.VERCEL) {
+  for (const envFile of ['.env.local', '.env']) {
+    try {
+      const fullPath = path.resolve(process.cwd(), envFile);
+      if (fs.existsSync(fullPath)) {
+        const lines = fs.readFileSync(fullPath, 'utf8').split('\n');
+        for (const line of lines) {
+          const trimmed = line.trim();
+          if (trimmed && !trimmed.startsWith('#') && trimmed.includes('=')) {
+            const idx = trimmed.indexOf('=');
+            const key = trimmed.slice(0, idx).trim();
+            let val = trimmed.slice(idx + 1).trim();
+            if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
+              val = val.slice(1, -1);
+            }
+            if (!process.env[key]) process.env[key] = val;
+          }
+        }
+      }
+    } catch {}
+  }
+}
 import { and, desc, eq, ne, or } from 'drizzle-orm';
 import { db, ensureDatabaseReady, scheduleSnapshotSave } from './src/db/index.ts';
 import { claims, items, sessions, users } from './src/db/schema.ts';
