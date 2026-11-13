@@ -13,7 +13,7 @@ import {
   verifyPassword,
 } from './src/db/auth-crypto.ts';
 import {
-  AuthRequest,
+  type AuthRequest,
   SESSION_COOKIE_NAME,
   requireAdmin,
   requireAuth,
@@ -25,6 +25,12 @@ app.set('trust proxy', 1);
 const PORT = 3000;
 
 app.use(express.json({ limit: '6mb' }));
+app.use((req, _res, next) => {
+  if (req.url && !req.url.startsWith('/api') && !req.url.startsWith('/src')) {
+    req.url = `/api${req.url.startsWith('/') ? '' : '/'}${req.url}`;
+  }
+  next();
+});
 app.use('/src/assets', express.static(path.resolve(process.cwd(), 'src/assets')));
 app.use('/api', async (_req, res, next) => {
   try {
