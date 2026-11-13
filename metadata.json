@@ -1,0 +1,6 @@
+{
+  "name": "CampusFind — Campus Lost & Found",
+  "description": "Website Lost & Found kampus berbasis PostgreSQL dengan fitur CRUD laporan barang, klaim kepemilikan via ciri rahasia dan KTM/NIM, serta panel Admin Middleman split-view triage.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
