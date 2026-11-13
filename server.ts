@@ -262,7 +262,7 @@ app.get('/api/items', async (req, res) => {
     return res.json({ items: filtered });
   } catch (error) {
     console.error('Failed to list public items:', error);
-    return res.status(500).json({ error: 'Gagal memuat katalog barang.' });
+    return res.status(500).json({ error: (error as Error)?.message || 'Gagal memuat katalog barang.' });
   }
 });
 

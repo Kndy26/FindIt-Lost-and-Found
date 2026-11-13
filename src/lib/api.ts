@@ -21,9 +21,16 @@ async function apiFetch<T>(url: string, options: RequestInit = {}): Promise<T> {
     credentials: 'include',
   });
 
-  const data = await res.json().catch(() => ({}));
+  let data: any = {};
+  const rawText = await res.text();
+  try {
+    data = JSON.parse(rawText);
+  } catch {
+    data = { error: rawText.slice(0, 300) };
+  }
+
   if (!res.ok) {
-    throw new Error(data.error || `Permintaan gagal (${res.status})`);
+    throw new Error(data.error || data.message || `Permintaan gagal (${res.status})`);
   }
   return data as T;
 }
