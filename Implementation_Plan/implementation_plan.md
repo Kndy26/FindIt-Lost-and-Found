@@ -69,7 +69,7 @@ A clean, wireframe-first Campus Lost & Found web application built purely on **C
 
 - **Decision 3: Live Node/Express Backend + Companion Python Script**
   - *Chosen Approach*: Express API backed by Cloud SQL PostgreSQL (Drizzle ORM + `pg` Pool) for live web execution, paired with a standalone Python (`psycopg2`) CLI/helper script connecting directly to the same PostgreSQL schema.
-  - *Why*: Satisfies AI Studio's Node/Vite single-port web runtime while giving you clean, working Python PostgreSQL code (`create_item`, `list_items`, `verify_item`, `delete_item`, `get_user_by_nim`) ready to run against PostgreSQL.
+  - *Why*: Satisfies the Node/Vite single-port web runtime while giving you clean, working Python PostgreSQL code (`create_item`, `list_items`, `verify_item`, `delete_item`, `get_user_by_nim`) ready to run against PostgreSQL.
 
 ---
 
