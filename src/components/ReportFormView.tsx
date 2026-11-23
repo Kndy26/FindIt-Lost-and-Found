@@ -157,14 +157,19 @@ export function ReportFormView({
       <form onSubmit={handleSubmit} className="mt-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
         <div className="lg:col-span-7 space-y-4">
           <div>
-            <label className="block text-xs font-medium text-slate-700 mb-1.5">
-              Jenis Laporan
-            </label>
-            <div className="grid grid-cols-2 gap-2 p-1 bg-slate-100 rounded-lg">
+            <span id="report-type-label" className="block text-xs font-medium text-slate-700 mb-1.5">
+              Jenis Laporan <span className="text-red-500" aria-hidden="true">*</span>
+            </span>
+            <div
+              className="grid grid-cols-2 gap-2 p-1 bg-slate-100 rounded-lg"
+              role="group"
+              aria-labelledby="report-type-label"
+            >
               <button
                 type="button"
+                aria-pressed={reportType === 'found'}
                 onClick={() => setReportType('found')}
-                className={`py-2 text-xs font-medium rounded-md transition-colors cursor-pointer ${
+                className={`py-2 text-xs font-medium rounded-md transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-600 ${
                   reportType === 'found'
                     ? 'bg-white text-slate-900 shadow-sm'
                     : 'text-slate-600 hover:text-slate-900'
@@ -174,8 +179,9 @@ export function ReportFormView({
               </button>
               <button
                 type="button"
+                aria-pressed={reportType === 'lost'}
                 onClick={() => setReportType('lost')}
-                className={`py-2 text-xs font-medium rounded-md transition-colors cursor-pointer ${
+                className={`py-2 text-xs font-medium rounded-md transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-600 ${
                   reportType === 'lost'
                     ? 'bg-white text-slate-900 shadow-sm'
                     : 'text-slate-600 hover:text-slate-900'
@@ -188,10 +194,12 @@ export function ReportFormView({
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-medium text-slate-700 mb-1.5">
-                Nama Barang
+              <label htmlFor="report-title" className="block text-xs font-medium text-slate-700 mb-1.5">
+                Nama Barang <span className="text-red-500" aria-hidden="true">*</span>
               </label>
               <input
+                id="report-title"
+                name="title"
                 type="text"
                 required
                 value={title}
@@ -202,10 +210,12 @@ export function ReportFormView({
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-slate-700 mb-1.5">
-                Kategori
+              <label htmlFor="report-category" className="block text-xs font-medium text-slate-700 mb-1.5">
+                Kategori <span className="text-red-500" aria-hidden="true">*</span>
               </label>
               <select
+                id="report-category"
+                name="category"
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
                 className="w-full px-3.5 py-2.5 text-sm bg-white border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
@@ -221,10 +231,12 @@ export function ReportFormView({
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-medium text-slate-700 mb-1.5">
-                Lokasi Kampus (Gedung / Lantai / Ruang)
+              <label htmlFor="report-location" className="block text-xs font-medium text-slate-700 mb-1.5">
+                Lokasi Kampus (Gedung / Lantai / Ruang) <span className="text-red-500" aria-hidden="true">*</span>
               </label>
               <input
+                id="report-location"
+                name="location"
                 type="text"
                 required
                 value={location}
@@ -235,10 +247,12 @@ export function ReportFormView({
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-slate-700 mb-1.5">
-                Waktu Temuan / Perkiraan Hilang
+              <label htmlFor="report-event-time" className="block text-xs font-medium text-slate-700 mb-1.5">
+                Waktu Temuan / Perkiraan Hilang <span className="text-red-500" aria-hidden="true">*</span>
               </label>
               <input
+                id="report-event-time"
+                name="eventTime"
                 type="datetime-local"
                 required
                 value={eventTime}
@@ -249,10 +263,12 @@ export function ReportFormView({
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-slate-700 mb-1.5">
-              Deskripsi Publik (Ditampilkan di Catalog)
+            <label htmlFor="report-description" className="block text-xs font-medium text-slate-700 mb-1.5">
+              Deskripsi Publik (Ditampilkan di Catalog) <span className="text-red-500" aria-hidden="true">*</span>
             </label>
             <textarea
+              id="report-description"
+              name="description"
               required
               rows={3}
               value={description}
@@ -267,10 +283,16 @@ export function ReportFormView({
               <ShieldAlert className="w-4 h-4 text-amber-600 shrink-0" />
               <span>Ciri Rahasia Barang (Khusus Verifikasi Admin Middleman)</span>
             </div>
-            <p className="text-xs text-slate-600">
+            <p id="report-secret-note-desc" className="text-xs text-slate-600">
               Catatan ini <strong>tidak ditampilkan</strong> di katalog publik. Admin menggunakannya untuk mencocokkan pengakuan pemilik asli.
             </p>
+            <label htmlFor="report-secret-note" className="sr-only">
+              Ciri Rahasia Barang
+            </label>
             <textarea
+              id="report-secret-note"
+              name="secretNote"
+              aria-describedby="report-secret-note-desc"
               required
               rows={2}
               value={secretNote}
@@ -283,28 +305,33 @@ export function ReportFormView({
 
         <div className="lg:col-span-5 flex flex-col justify-between gap-5">
           <div className="space-y-3">
-            <label className="block text-xs font-medium text-slate-700">
+            <label htmlFor="report-photo-input" className="block text-xs font-medium text-slate-700">
               Foto Barang (Disarankan untuk Verifikasi Cepat)
             </label>
             <div className="aspect-[4/3] w-full rounded-xl overflow-hidden border border-slate-200 bg-slate-100">
-              <ItemThumbnail src={imageUrl} alt="Preview barang" className="w-full h-full" />
+              <ItemThumbnail src={imageUrl} alt={title ? `Preview foto untuk ${title}` : 'Preview foto barang'} className="w-full h-full" />
             </div>
             <div className="flex flex-wrap items-center gap-3">
-              <label className="inline-flex items-center gap-2 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-medium rounded-lg cursor-pointer transition-colors">
+              <label
+                htmlFor="report-photo-input"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-medium rounded-lg cursor-pointer transition-colors focus-within:ring-2 focus-within:ring-blue-600 focus-within:ring-offset-2"
+              >
                 <Upload className="w-3.5 h-3.5" />
                 <span>{uploading ? 'Memproses Foto...' : 'Pilih / Ganti Foto'}</span>
                 <input
+                  id="report-photo-input"
+                  name="photo"
                   type="file"
                   accept="image/*"
                   onChange={handleImageChange}
-                  className="hidden"
+                  className="sr-only"
                 />
               </label>
               {imageUrl && (
                 <button
                   type="button"
                   onClick={() => setImageUrl('')}
-                  className="text-xs font-medium text-red-600 hover:underline cursor-pointer"
+                  className="text-xs font-medium text-red-600 hover:underline cursor-pointer focus:outline-none focus:ring-2 focus:ring-red-600 rounded px-1"
                 >
                   Hapus Foto
                 </button>

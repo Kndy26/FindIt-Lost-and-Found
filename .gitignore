@@ -6,3 +6,7 @@ coverage/
 *.log
 .env*
 !.env.example
+
+# Agent & AI skills
+.agents/
+
