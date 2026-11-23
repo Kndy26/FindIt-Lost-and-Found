@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { LogOut, UserCircle2 } from 'lucide-react';
+import { AnimatePresence, motion } from 'motion/react';
 import { getCurrentUser, logoutAccount } from './lib/api.ts';
 import type { MyItem, User } from './types.ts';
 import { AuthModal } from './components/AuthModal.tsx';
@@ -89,13 +90,20 @@ export default function App() {
                     if (nav.id !== 'report') setEditingItem(null);
                     setActiveView(nav.id);
                   }}
-                  className={`text-sm font-medium transition-colors whitespace-nowrap shrink-0 py-1 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-campus-blue rounded-md px-2 ${
+                  className={`relative text-sm font-medium transition-colors whitespace-nowrap shrink-0 py-1.5 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-campus-blue rounded-md px-2 ${
                     isActive
-                      ? 'text-campus-blue underline underline-offset-8 decoration-2 font-semibold'
+                      ? 'text-campus-blue font-semibold'
                       : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
                   {nav.label}
+                  {isActive && (
+                    <motion.div
+                      layoutId="main-nav-indicator"
+                      className="absolute bottom-0 left-2 right-2 h-0.5 bg-campus-blue rounded-full"
+                      transition={{ type: 'spring', bounce: 0.15, duration: 0.35 }}
+                    />
+                  )}
                 </button>
               );
             })}
@@ -152,11 +160,18 @@ export default function App() {
                   if (nav.id !== 'report') setEditingItem(null);
                   setActiveView(nav.id);
                 }}
-                className={`px-3 py-1.5 text-xs font-medium rounded-md whitespace-nowrap shrink-0 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-campus-blue ${
-                  isActive ? 'bg-campus-navy text-white shadow-sm' : 'text-slate-600 hover:text-slate-900'
+                className={`relative px-3 py-1.5 text-xs font-medium rounded-md whitespace-nowrap shrink-0 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-campus-blue ${
+                  isActive ? 'text-white font-semibold' : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
-                {nav.label}
+                {isActive && (
+                  <motion.div
+                    layoutId="mobile-nav-pill"
+                    className="absolute inset-0 bg-campus-navy rounded-md shadow-sm"
+                    transition={{ type: 'spring', bounce: 0.15, duration: 0.35 }}
+                  />
+                )}
+                <span className="relative z-10">{nav.label}</span>
               </button>
             );
           })}
@@ -238,19 +253,28 @@ export default function App() {
         }}
       />
 
-      {toast && (
-        <div className="fixed bottom-5 right-5 z-50 max-w-sm">
-          <div
-            className={`px-4 py-3 rounded-xl border shadow-lg text-xs font-medium ${
-              toast.variant === 'error'
-                ? 'bg-red-50 border-red-200 text-red-800'
-                : 'bg-campus-navy border-campus-navy-dark text-white'
-            }`}
+      <AnimatePresence>
+        {toast && (
+          <motion.div
+            initial={{ opacity: 0, y: 16, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 12, scale: 0.95 }}
+            transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+            className="fixed bottom-5 right-5 z-50 max-w-sm pointer-events-auto"
           >
-            {toast.message}
-          </div>
-        </div>
-      )}
+            <div
+              role="status"
+              className={`px-4 py-3 rounded-xl border shadow-lg text-xs font-medium ${
+                toast.variant === 'error'
+                  ? 'bg-red-50 border-red-200 text-red-800'
+                  : 'bg-campus-navy border-campus-navy-dark text-white'
+              }`}
+            >
+              {toast.message}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

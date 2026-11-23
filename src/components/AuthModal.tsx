@@ -1,5 +1,6 @@
 import { useEffect, useState, type FormEvent } from 'react';
 import { X, Lock, UserPlus, LogIn, Eye, EyeOff } from 'lucide-react';
+import { AnimatePresence, motion } from 'motion/react';
 import { loginAccount, registerAccount } from '../lib/api.ts';
 import type { User } from '../types.ts';
 
@@ -31,8 +32,6 @@ export function AuthModal({ open, onClose, onSuccess }: AuthModalProps) {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [open, onClose]);
 
-  if (!open) return null;
-
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError(null);
@@ -61,69 +60,98 @@ export function AuthModal({ open, onClose, onSuccess }: AuthModalProps) {
   };
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="auth-modal-title"
-    >
-      <div className="w-full max-w-md bg-white border border-slate-200 rounded-xl shadow-xl overflow-hidden">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200">
-          <div className="flex items-center gap-2.5">
-            <Lock className="w-4 h-4 text-campus-navy" />
-            <h2 id="auth-modal-title" className="text-base font-semibold text-campus-navy">
-              {mode === 'login' ? 'Sign In Akun Kampus' : 'Registrasi Akun Baru'}
-            </h2>
-          </div>
-          <button
-            type="button"
+    <AnimatePresence>
+      {open && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
             onClick={onClose}
-            className="h-10 w-10 flex items-center justify-center rounded-lg text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-campus-blue cursor-pointer"
-            aria-label="Tutup dialog autentikasi"
+            className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs"
+            aria-hidden="true"
+          />
+          <motion.div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="auth-modal-title"
+            initial={{ opacity: 0, scale: 0.95, y: 10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 8 }}
+            transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+            className="relative w-full max-w-md bg-white border border-slate-200 rounded-xl shadow-xl overflow-hidden z-10"
           >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
+            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200">
+              <div className="flex items-center gap-2.5">
+                <Lock className="w-4 h-4 text-campus-navy" />
+                <h2 id="auth-modal-title" className="text-base font-semibold text-campus-navy">
+                  {mode === 'login' ? 'Sign In Akun Kampus' : 'Registrasi Akun Baru'}
+                </h2>
+              </div>
+              <button
+                type="button"
+                onClick={onClose}
+                className="h-10 w-10 flex items-center justify-center rounded-lg text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-campus-blue cursor-pointer"
+                aria-label="Tutup dialog autentikasi"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
 
-        <div className="p-6 space-y-5">
-          <div className="grid grid-cols-2 gap-1 p-1 bg-slate-100 rounded-lg" role="tablist" aria-label="Pilihan Autentikasi">
-            <button
-              type="button"
-              role="tab"
-              aria-selected={mode === 'login'}
-              id="tab-login"
-              aria-controls="auth-form-panel"
-              onClick={() => {
-                setMode('login');
-                setError(null);
-              }}
-              className={`py-2 text-xs font-medium rounded-md transition-colors whitespace-nowrap cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-campus-blue ${
-                mode === 'login'
-                  ? 'bg-white text-campus-navy shadow-sm font-semibold'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              Sign In
-            </button>
-            <button
-              type="button"
-              role="tab"
-              aria-selected={mode === 'register'}
-              id="tab-register"
-              aria-controls="auth-form-panel"
-              onClick={() => {
-                setMode('register');
-                setError(null);
-              }}
-              className={`py-2 text-xs font-medium rounded-md transition-colors whitespace-nowrap cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-campus-blue ${
-                mode === 'register'
-                  ? 'bg-white text-campus-navy shadow-sm font-semibold'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              Register Akun
-            </button>
-          </div>
+            <div className="p-6 space-y-5">
+              <div className="grid grid-cols-2 gap-1 p-1 bg-slate-100 rounded-lg" role="tablist" aria-label="Pilihan Autentikasi">
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={mode === 'login'}
+                  id="tab-login"
+                  aria-controls="auth-form-panel"
+                  onClick={() => {
+                    setMode('login');
+                    setError(null);
+                  }}
+                  className={`relative py-2 text-xs font-medium rounded-md transition-colors whitespace-nowrap cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-campus-blue ${
+                    mode === 'login'
+                      ? 'text-campus-navy font-semibold'
+                      : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                >
+                  {mode === 'login' && (
+                    <motion.div
+                      layoutId="auth-tab-pill"
+                      className="absolute inset-0 bg-white rounded-md shadow-sm"
+                      transition={{ type: 'spring', bounce: 0.15, duration: 0.35 }}
+                    />
+                  )}
+                  <span className="relative z-10">Sign In</span>
+                </button>
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={mode === 'register'}
+                  id="tab-register"
+                  aria-controls="auth-form-panel"
+                  onClick={() => {
+                    setMode('register');
+                    setError(null);
+                  }}
+                  className={`relative py-2 text-xs font-medium rounded-md transition-colors whitespace-nowrap cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-campus-blue ${
+                    mode === 'register'
+                      ? 'text-campus-navy font-semibold'
+                      : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                >
+                  {mode === 'register' && (
+                    <motion.div
+                      layoutId="auth-tab-pill"
+                      className="absolute inset-0 bg-white rounded-md shadow-sm"
+                      transition={{ type: 'spring', bounce: 0.15, duration: 0.35 }}
+                    />
+                  )}
+                  <span className="relative z-10">Register Akun</span>
+                </button>
+              </div>
 
           {error && (
             <div
@@ -322,7 +350,9 @@ export function AuthModal({ open, onClose, onSuccess }: AuthModalProps) {
             </div>
           )}
         </div>
-      </div>
+      </motion.div>
     </div>
+  )}
+</AnimatePresence>
   );
 }

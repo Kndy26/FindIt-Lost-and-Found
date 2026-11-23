@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState, type ChangeEvent, type FormEvent } from 'react';
+import { AnimatePresence, motion } from 'motion/react';
 import {
   Search,
   MapPin,
@@ -84,6 +85,17 @@ export function CatalogView({
       setContactInfo(currentUser.email);
     }
   }, [currentUser]);
+
+  useEffect(() => {
+    if (!selectedItem) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setSelectedItem(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [selectedItem]);
 
   const filteredItems = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
@@ -250,13 +262,22 @@ export function CatalogView({
                     key={tab}
                     type="button"
                     onClick={() => setTypeFilter(tab)}
-                    className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors whitespace-nowrap cursor-pointer ${
+                    className={`relative px-3 py-1.5 text-xs font-medium rounded-md transition-colors whitespace-nowrap cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-campus-blue ${
                       typeFilter === tab
-                        ? 'bg-white text-slate-900 shadow-sm'
+                        ? 'text-slate-900 font-semibold'
                         : 'text-slate-600 hover:text-slate-900'
                     }`}
                   >
-                    {tab === 'all' ? 'Semua' : tab === 'found' ? 'Found' : 'Lost'}
+                    {typeFilter === tab && (
+                      <motion.div
+                        layoutId="catalog-type-pill"
+                        className="absolute inset-0 bg-white rounded-md shadow-sm"
+                        transition={{ type: 'spring', bounce: 0.15, duration: 0.35 }}
+                      />
+                    )}
+                    <span className="relative z-10">
+                      {tab === 'all' ? 'Semua' : tab === 'found' ? 'Found' : 'Lost'}
+                    </span>
                   </button>
                 ))}
               </div>
@@ -387,10 +408,12 @@ export function CatalogView({
           {filteredItems.map((item) => (
             <article
               key={item.id}
-              className="bg-white border border-slate-200 rounded-xl overflow-hidden flex flex-col hover:border-slate-300 transition-colors"
+              className="group bg-white border border-slate-200 hover:border-slate-300 rounded-xl overflow-hidden flex flex-col hover:-translate-y-1 hover:shadow-md transition-all duration-200 ease-out"
             >
               <div className="aspect-[4/3] w-full bg-slate-100 overflow-hidden border-b border-slate-200">
-                <ItemThumbnail src={item.imageUrl} alt={item.title} className="w-full h-full" />
+                <div className="w-full h-full transition-transform duration-300 ease-out group-hover:scale-105">
+                  <ItemThumbnail src={item.imageUrl} alt={item.title} className="w-full h-full" />
+                </div>
               </div>
 
               <div className="p-4 flex-1 flex flex-col justify-between gap-4">
@@ -448,32 +471,46 @@ export function CatalogView({
         </div>
       )}
 
-      {selectedItem && (
-        <div
-          className="fixed inset-0 z-50 flex justify-end bg-slate-900/45"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="drawer-item-title"
-        >
-          <div className="w-full max-w-xl bg-white h-full overflow-y-auto border-l border-slate-200 flex flex-col">
-            <div className="sticky top-0 z-10 flex items-center justify-between px-6 py-4 bg-white border-b border-slate-200">
-              <div>
-                <div className="text-xs font-mono tabular-nums text-slate-500">
-                  ID #{selectedItem.id} · {selectedItem.reportType === 'found' ? 'FOUND' : 'LOST'}
+      <AnimatePresence>
+        {selectedItem && (
+          <div className="fixed inset-0 z-50 flex justify-end">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              onClick={() => setSelectedItem(null)}
+              className="fixed inset-0 bg-slate-900/45 backdrop-blur-xs"
+              aria-hidden="true"
+            />
+            <motion.div
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="drawer-item-title"
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ type: 'spring', damping: 28, stiffness: 280 }}
+              className="relative w-full max-w-xl bg-white h-full overflow-y-auto border-l border-slate-200 flex flex-col shadow-2xl z-10"
+            >
+              <div className="sticky top-0 z-10 flex items-center justify-between px-6 py-4 bg-white border-b border-slate-200">
+                <div>
+                  <div className="text-xs font-mono tabular-nums text-slate-500">
+                    ID #{selectedItem.id} · {selectedItem.reportType === 'found' ? 'FOUND' : 'LOST'}
+                  </div>
+                  <h2 id="drawer-item-title" className="text-base font-semibold text-slate-900">
+                    {selectedItem.title}
+                  </h2>
                 </div>
-                <h2 id="drawer-item-title" className="text-base font-semibold text-slate-900">
-                  {selectedItem.title}
-                </h2>
+                <button
+                  type="button"
+                  onClick={() => setSelectedItem(null)}
+                  className="p-2 rounded-lg text-slate-500 hover:text-slate-900 hover:bg-slate-100 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-campus-blue"
+                  aria-label="Tutup panel"
+                >
+                  <X className="w-4 h-4" />
+                </button>
               </div>
-              <button
-                type="button"
-                onClick={() => setSelectedItem(null)}
-                className="p-2 rounded-lg text-slate-500 hover:text-slate-900 hover:bg-slate-100"
-                aria-label="Tutup panel"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
 
             <div className="p-6 space-y-6 flex-1">
               <div className="aspect-[4/3] w-full rounded-xl overflow-hidden border border-slate-200 bg-slate-100">
@@ -636,9 +673,10 @@ export function CatalogView({
                 </form>
               )}
             </div>
-          </div>
+          </motion.div>
         </div>
       )}
-    </div>
+    </AnimatePresence>
+  </div>
   );
 }
