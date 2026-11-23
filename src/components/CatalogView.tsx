@@ -212,7 +212,7 @@ export function CatalogView({
                 onNavigateReport();
               }
             }}
-            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors whitespace-nowrap shrink-0 cursor-pointer"
+            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-campus-navy hover:bg-campus-navy-dark text-white text-sm font-medium rounded-lg transition-colors whitespace-nowrap shrink-0 cursor-pointer focus:outline-none focus:ring-2 focus:ring-campus-blue focus:ring-offset-2"
           >
             <Plus className="w-4 h-4" />
             <span>Laporkan Barang</span>
@@ -376,7 +376,7 @@ export function CatalogView({
               if (!currentUser) onRequireAuth();
               else onNavigateReport();
             }}
-            className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white text-sm font-medium rounded-lg transition-colors"
+            className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-campus-navy hover:bg-campus-navy-dark text-white text-sm font-medium rounded-lg transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-campus-blue focus:ring-offset-2"
           >
             <Plus className="w-4 h-4" />
             <span>Buat Laporan Pertama</span>
@@ -433,7 +433,7 @@ export function CatalogView({
                   <button
                     type="button"
                     onClick={() => handleOpenDrawer(item)}
-                    className="w-full py-2 px-3 bg-slate-900 hover:bg-slate-800 text-white text-xs font-medium rounded-lg transition-colors cursor-pointer"
+                    className="w-full py-2 px-3 bg-campus-navy hover:bg-campus-navy-dark text-white text-xs font-medium rounded-lg transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-campus-blue"
                   >
                     {item.status === 'claimed'
                       ? 'Lihat Detail Barang'
@@ -538,7 +538,7 @@ export function CatalogView({
                       <button
                         type="button"
                         onClick={onRequireAuth}
-                        className="px-3.5 py-2 bg-slate-900 text-white text-xs font-medium rounded-lg whitespace-nowrap shrink-0 cursor-pointer"
+                        className="px-3.5 py-2 bg-campus-navy hover:bg-campus-navy-dark text-white text-xs font-medium rounded-lg whitespace-nowrap shrink-0 cursor-pointer focus:outline-none focus:ring-2 focus:ring-campus-blue"
                       >
                         Sign In Sekarang
                       </button>
@@ -627,7 +627,7 @@ export function CatalogView({
                       <button
                         type="submit"
                         disabled={submittingClaim || uploadingKtm}
-                        className="w-full py-2.5 px-4 bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white text-sm font-medium rounded-lg transition-colors cursor-pointer"
+                        className="w-full py-2.5 px-4 bg-campus-blue hover:bg-campus-blue-hover disabled:opacity-60 text-white text-sm font-medium rounded-lg transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-campus-blue focus:ring-offset-2"
                       >
                         {submittingClaim ? 'Mengirim Pengajuan...' : 'Kirim Klaim untuk Verifikasi Admin'}
                       </button>

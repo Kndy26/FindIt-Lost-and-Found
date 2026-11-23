@@ -73,7 +73,7 @@ export function ReportFormView({
         <button
           type="button"
           onClick={onRequireAuth}
-          className="mt-5 px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-sm font-medium rounded-lg transition-colors cursor-pointer"
+          className="mt-5 px-5 py-2.5 bg-campus-navy hover:bg-campus-navy-dark text-white text-sm font-medium rounded-lg transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-campus-blue focus:ring-offset-2"
         >
           Sign In Akun Kampus
         </button>
@@ -344,7 +344,7 @@ export function ReportFormView({
               <button
                 type="button"
                 onClick={onCancelEdit}
-                className="px-4 py-2.5 text-sm font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors cursor-pointer"
+                className="px-4 py-2.5 text-sm font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-slate-400"
               >
                 Batal
               </button>
@@ -352,7 +352,7 @@ export function ReportFormView({
             <button
               type="submit"
               disabled={submitting || uploading}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white text-sm font-medium rounded-lg transition-colors cursor-pointer"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-campus-navy hover:bg-campus-navy-dark disabled:opacity-60 text-white text-sm font-medium rounded-lg transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-campus-blue focus:ring-offset-2"
             >
               <Save className="w-4 h-4" />
               <span>

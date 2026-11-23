@@ -1,7 +1,30 @@
 @import "tailwindcss";
 
+@theme {
+  --color-campus-navy: #1e3a5f;
+  --color-campus-navy-dark: #152a45;
+  --color-campus-navy-light: #2c4e7a;
+  --color-campus-blue: #2563eb;
+  --color-campus-blue-hover: #1d4ed8;
+  --color-campus-amber: #d97706;
+  --color-campus-amber-hover: #b45309;
+  --color-campus-bg: #f8fafc;
+}
+
 @layer base {
   :root {
+    --color-primary: #1e3a5f;
+    --color-primary-hover: #152a45;
+    --color-secondary: #2563eb;
+    --color-secondary-hover: #1d4ed8;
+    --color-accent: #d97706;
+    --color-accent-hover: #b45309;
+    --color-bg: #f8fafc;
+    --color-card: #ffffff;
+    --color-border: #e2e8f0;
+    --color-text-main: #0f172a;
+    --color-text-muted: #475569;
+
     --font-display: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
     --font-sans: 'DM Sans', system-ui, -apple-system, sans-serif;
     --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
@@ -9,8 +32,8 @@
 
   body {
     font-family: var(--font-sans);
-    background-color: #f8fafc;
-    color: #0f172a;
+    background-color: var(--color-bg);
+    color: var(--color-text-main);
   }
 
   h1, h2, h3, h4, .font-display {
@@ -19,6 +42,31 @@
 
   .font-mono, code, pre {
     font-family: var(--font-mono);
+  }
+
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  select,
+  input[type="checkbox"],
+  input[type="radio"],
+  label[for] {
+    cursor: pointer;
+  }
+
+  button,
+  [role="button"],
+  a,
+  input,
+  select,
+  textarea {
+    transition-property: color, background-color, border-color, opacity, box-shadow, transform;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+  }
+
+  :focus-visible {
+    outline: 2px solid #2563eb;
+    outline-offset: 2px;
   }
 }
 

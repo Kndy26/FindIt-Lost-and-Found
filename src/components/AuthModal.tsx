@@ -70,15 +70,15 @@ export function AuthModal({ open, onClose, onSuccess }: AuthModalProps) {
       <div className="w-full max-w-md bg-white border border-slate-200 rounded-xl shadow-xl overflow-hidden">
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200">
           <div className="flex items-center gap-2.5">
-            <Lock className="w-4 h-4 text-slate-700" />
-            <h2 id="auth-modal-title" className="text-base font-semibold text-slate-900">
+            <Lock className="w-4 h-4 text-campus-navy" />
+            <h2 id="auth-modal-title" className="text-base font-semibold text-campus-navy">
               {mode === 'login' ? 'Sign In Akun Kampus' : 'Registrasi Akun Baru'}
             </h2>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="h-10 w-10 flex items-center justify-center rounded-lg text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-600 cursor-pointer"
+            className="h-10 w-10 flex items-center justify-center rounded-lg text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-colors focus:outline-none focus:ring-2 focus:ring-campus-blue cursor-pointer"
             aria-label="Tutup dialog autentikasi"
           >
             <X className="w-5 h-5" />
@@ -97,9 +97,9 @@ export function AuthModal({ open, onClose, onSuccess }: AuthModalProps) {
                 setMode('login');
                 setError(null);
               }}
-              className={`py-2 text-xs font-medium rounded-md transition-colors whitespace-nowrap cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-600 ${
+              className={`py-2 text-xs font-medium rounded-md transition-colors whitespace-nowrap cursor-pointer focus:outline-none focus:ring-2 focus:ring-campus-blue ${
                 mode === 'login'
-                  ? 'bg-white text-slate-900 shadow-sm'
+                  ? 'bg-white text-campus-navy shadow-sm font-semibold'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
@@ -115,9 +115,9 @@ export function AuthModal({ open, onClose, onSuccess }: AuthModalProps) {
                 setMode('register');
                 setError(null);
               }}
-              className={`py-2 text-xs font-medium rounded-md transition-colors whitespace-nowrap cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-600 ${
+              className={`py-2 text-xs font-medium rounded-md transition-colors whitespace-nowrap cursor-pointer focus:outline-none focus:ring-2 focus:ring-campus-blue ${
                 mode === 'register'
-                  ? 'bg-white text-slate-900 shadow-sm'
+                  ? 'bg-white text-campus-navy shadow-sm font-semibold'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
@@ -272,7 +272,7 @@ export function AuthModal({ open, onClose, onSuccess }: AuthModalProps) {
             <button
               type="submit"
               disabled={submitting}
-              className="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-slate-900 hover:bg-slate-800 disabled:opacity-60 text-white text-sm font-medium rounded-lg transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
+              className="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-campus-navy hover:bg-campus-navy-dark disabled:opacity-60 text-white text-sm font-medium rounded-lg transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-campus-blue focus:ring-offset-2"
             >
               {mode === 'login' ? (
                 <>
