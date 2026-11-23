@@ -73,7 +73,7 @@ export function ReportFormView({
         <button
           type="button"
           onClick={onRequireAuth}
-          className="mt-5 px-5 py-2.5 bg-campus-navy hover:bg-campus-navy-dark text-white text-sm font-medium rounded-lg transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-campus-blue focus:ring-offset-2"
+          className="mt-5 px-5 py-2.5 bg-campus-navy hover:bg-campus-navy-dark text-white text-sm font-medium rounded-lg transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-campus-blue focus-visible:ring-offset-2"
         >
           Sign In Akun Kampus
         </button>
@@ -169,7 +169,7 @@ export function ReportFormView({
                 type="button"
                 aria-pressed={reportType === 'found'}
                 onClick={() => setReportType('found')}
-                className={`py-2 text-xs font-medium rounded-md transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-600 ${
+                className={`py-2 text-xs font-medium rounded-md transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-campus-blue ${
                   reportType === 'found'
                     ? 'bg-white text-slate-900 shadow-sm'
                     : 'text-slate-600 hover:text-slate-900'
@@ -181,7 +181,7 @@ export function ReportFormView({
                 type="button"
                 aria-pressed={reportType === 'lost'}
                 onClick={() => setReportType('lost')}
-                className={`py-2 text-xs font-medium rounded-md transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-600 ${
+                className={`py-2 text-xs font-medium rounded-md transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-campus-blue ${
                   reportType === 'lost'
                     ? 'bg-white text-slate-900 shadow-sm'
                     : 'text-slate-600 hover:text-slate-900'
@@ -331,7 +331,7 @@ export function ReportFormView({
                 <button
                   type="button"
                   onClick={() => setImageUrl('')}
-                  className="text-xs font-medium text-red-600 hover:underline cursor-pointer focus:outline-none focus:ring-2 focus:ring-red-600 rounded px-1"
+                  className="text-xs font-medium text-red-600 hover:underline cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-red-600 rounded px-1"
                 >
                   Hapus Foto
                 </button>
@@ -344,7 +344,7 @@ export function ReportFormView({
               <button
                 type="button"
                 onClick={onCancelEdit}
-                className="px-4 py-2.5 text-sm font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-slate-400"
+                className="px-4 py-2.5 text-sm font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
               >
                 Batal
               </button>
@@ -352,7 +352,7 @@ export function ReportFormView({
             <button
               type="submit"
               disabled={submitting || uploading}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-campus-navy hover:bg-campus-navy-dark disabled:opacity-60 text-white text-sm font-medium rounded-lg transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-campus-blue focus:ring-offset-2"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-campus-navy hover:bg-campus-navy-dark disabled:opacity-60 text-white text-sm font-medium rounded-lg transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-campus-blue focus-visible:ring-offset-2"
             >
               <Save className="w-4 h-4" />
               <span>

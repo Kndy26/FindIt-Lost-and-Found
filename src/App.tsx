@@ -73,7 +73,7 @@ export default function App() {
               setEditingItem(null);
               setActiveView('catalog');
             }}
-            className="font-display text-lg font-bold tracking-tight text-campus-navy hover:opacity-90 whitespace-nowrap shrink-0 cursor-pointer focus:outline-none focus:ring-2 focus:ring-campus-blue rounded-md px-1"
+            className="font-display text-lg font-bold tracking-tight text-campus-navy hover:opacity-90 whitespace-nowrap shrink-0 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-campus-blue rounded-md px-1"
           >
             CampusFind
           </button>
@@ -89,7 +89,7 @@ export default function App() {
                     if (nav.id !== 'report') setEditingItem(null);
                     setActiveView(nav.id);
                   }}
-                  className={`text-sm font-medium transition-colors whitespace-nowrap shrink-0 py-1 cursor-pointer focus:outline-none focus:ring-2 focus:ring-campus-blue rounded-md px-2 ${
+                  className={`text-sm font-medium transition-colors whitespace-nowrap shrink-0 py-1 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-campus-blue rounded-md px-2 ${
                     isActive
                       ? 'text-campus-blue underline underline-offset-8 decoration-2 font-semibold'
                       : 'text-slate-600 hover:text-slate-900'
@@ -109,7 +109,7 @@ export default function App() {
                 <button
                   type="button"
                   onClick={() => setAuthModalOpen(true)}
-                  className="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg whitespace-nowrap shrink-0 cursor-pointer focus:outline-none focus:ring-2 focus:ring-campus-blue"
+                  className="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg whitespace-nowrap shrink-0 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-campus-blue"
                   title="Ganti akun"
                 >
                   <UserCircle2 className="w-4 h-4 text-slate-600" />
@@ -118,7 +118,7 @@ export default function App() {
                 <button
                   type="button"
                   onClick={() => void handleLogout()}
-                  className="p-2 text-slate-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-red-600"
+                  className="p-2 text-slate-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-red-600"
                   aria-label="Sign Out"
                   title="Sign Out"
                 >
@@ -129,7 +129,7 @@ export default function App() {
               <button
                 type="button"
                 onClick={() => setAuthModalOpen(true)}
-                className="px-4 py-2 text-xs font-medium text-white bg-campus-navy hover:bg-campus-navy-dark rounded-lg transition-colors whitespace-nowrap shrink-0 cursor-pointer focus:outline-none focus:ring-2 focus:ring-campus-blue focus:ring-offset-2"
+                className="px-4 py-2 text-xs font-medium text-white bg-campus-navy hover:bg-campus-navy-dark rounded-lg transition-colors whitespace-nowrap shrink-0 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-campus-blue focus-visible:ring-offset-2"
               >
                 Sign In
               </button>
@@ -152,7 +152,7 @@ export default function App() {
                   if (nav.id !== 'report') setEditingItem(null);
                   setActiveView(nav.id);
                 }}
-                className={`px-3 py-1.5 text-xs font-medium rounded-md whitespace-nowrap shrink-0 cursor-pointer focus:outline-none focus:ring-2 focus:ring-campus-blue ${
+                className={`px-3 py-1.5 text-xs font-medium rounded-md whitespace-nowrap shrink-0 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-campus-blue ${
                   isActive ? 'bg-campus-navy text-white shadow-sm' : 'text-slate-600 hover:text-slate-900'
                 }`}
               >

@@ -80,7 +80,7 @@ export function MyReportsView({
         <button
           type="button"
           onClick={onRequireAuth}
-          className="mt-5 px-5 py-2.5 bg-campus-navy hover:bg-campus-navy-dark text-white text-sm font-medium rounded-lg transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-campus-blue focus:ring-offset-2"
+          className="mt-5 px-5 py-2.5 bg-campus-navy hover:bg-campus-navy-dark text-white text-sm font-medium rounded-lg transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-campus-blue focus-visible:ring-offset-2"
         >
           Sign In Akun Kampus
         </button>

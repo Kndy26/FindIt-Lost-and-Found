@@ -78,7 +78,7 @@ export function AuthModal({ open, onClose, onSuccess }: AuthModalProps) {
           <button
             type="button"
             onClick={onClose}
-            className="h-10 w-10 flex items-center justify-center rounded-lg text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-colors focus:outline-none focus:ring-2 focus:ring-campus-blue cursor-pointer"
+            className="h-10 w-10 flex items-center justify-center rounded-lg text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-campus-blue cursor-pointer"
             aria-label="Tutup dialog autentikasi"
           >
             <X className="w-5 h-5" />
@@ -97,7 +97,7 @@ export function AuthModal({ open, onClose, onSuccess }: AuthModalProps) {
                 setMode('login');
                 setError(null);
               }}
-              className={`py-2 text-xs font-medium rounded-md transition-colors whitespace-nowrap cursor-pointer focus:outline-none focus:ring-2 focus:ring-campus-blue ${
+              className={`py-2 text-xs font-medium rounded-md transition-colors whitespace-nowrap cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-campus-blue ${
                 mode === 'login'
                   ? 'bg-white text-campus-navy shadow-sm font-semibold'
                   : 'text-slate-600 hover:text-slate-900'
@@ -115,7 +115,7 @@ export function AuthModal({ open, onClose, onSuccess }: AuthModalProps) {
                 setMode('register');
                 setError(null);
               }}
-              className={`py-2 text-xs font-medium rounded-md transition-colors whitespace-nowrap cursor-pointer focus:outline-none focus:ring-2 focus:ring-campus-blue ${
+              className={`py-2 text-xs font-medium rounded-md transition-colors whitespace-nowrap cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-campus-blue ${
                 mode === 'register'
                   ? 'bg-white text-campus-navy shadow-sm font-semibold'
                   : 'text-slate-600 hover:text-slate-900'
@@ -179,7 +179,7 @@ export function AuthModal({ open, onClose, onSuccess }: AuthModalProps) {
                     <button
                       type="button"
                       onClick={() => setShowPassword((prev) => !prev)}
-                      className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-600 rounded focus:outline-none focus:ring-2 focus:ring-blue-600 cursor-pointer"
+                      className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-600 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-campus-blue cursor-pointer"
                       aria-label={showPassword ? 'Sembunyikan password' : 'Lihat password'}
                     >
                       {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -259,7 +259,7 @@ export function AuthModal({ open, onClose, onSuccess }: AuthModalProps) {
                     <button
                       type="button"
                       onClick={() => setShowPassword((prev) => !prev)}
-                      className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-600 rounded focus:outline-none focus:ring-2 focus:ring-blue-600 cursor-pointer"
+                      className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-600 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-campus-blue cursor-pointer"
                       aria-label={showPassword ? 'Sembunyikan password' : 'Lihat password'}
                     >
                       {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -272,7 +272,7 @@ export function AuthModal({ open, onClose, onSuccess }: AuthModalProps) {
             <button
               type="submit"
               disabled={submitting}
-              className="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-campus-navy hover:bg-campus-navy-dark disabled:opacity-60 text-white text-sm font-medium rounded-lg transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-campus-blue focus:ring-offset-2"
+              className="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-campus-navy hover:bg-campus-navy-dark disabled:opacity-60 text-white text-sm font-medium rounded-lg transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-campus-blue focus-visible:ring-offset-2"
             >
               {mode === 'login' ? (
                 <>
@@ -297,7 +297,7 @@ export function AuthModal({ open, onClose, onSuccess }: AuthModalProps) {
                 <button
                   type="button"
                   onClick={() => fillDemo('admin@kampus.ac.id', 'admin123')}
-                  className="px-2.5 py-2 text-left border border-slate-200 hover:border-slate-300 bg-slate-50 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  className="px-2.5 py-2 text-left border border-slate-200 hover:border-slate-300 bg-slate-50 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-campus-blue"
                 >
                   <div className="text-xs font-semibold text-slate-900 truncate">Admin Middleman</div>
                   <div className="text-[11px] font-mono text-slate-500 truncate">admin@kampus.ac.id</div>
@@ -305,7 +305,7 @@ export function AuthModal({ open, onClose, onSuccess }: AuthModalProps) {
                 <button
                   type="button"
                   onClick={() => fillDemo('nadia.putri@kampus.ac.id', 'mahasiswa123')}
-                  className="px-2.5 py-2 text-left border border-slate-200 hover:border-slate-300 bg-slate-50 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  className="px-2.5 py-2 text-left border border-slate-200 hover:border-slate-300 bg-slate-50 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-campus-blue"
                 >
                   <div className="text-xs font-semibold text-slate-900 truncate">Nadia (Finder)</div>
                   <div className="text-[11px] font-mono text-slate-500 truncate">NIM 2301849201</div>
@@ -313,7 +313,7 @@ export function AuthModal({ open, onClose, onSuccess }: AuthModalProps) {
                 <button
                   type="button"
                   onClick={() => fillDemo('bima.pratama@kampus.ac.id', 'mahasiswa123')}
-                  className="px-2.5 py-2 text-left border border-slate-200 hover:border-slate-300 bg-slate-50 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  className="px-2.5 py-2 text-left border border-slate-200 hover:border-slate-300 bg-slate-50 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-campus-blue"
                 >
                   <div className="text-xs font-semibold text-slate-900 truncate">Bima (Claimant)</div>
                   <div className="text-[11px] font-mono text-slate-500 truncate">NIM 2201753118</div>

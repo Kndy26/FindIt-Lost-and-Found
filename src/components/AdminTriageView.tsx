@@ -97,7 +97,7 @@ export function AdminTriageView({
         <button
           type="button"
           onClick={onRequireAuth}
-          className="mt-5 px-5 py-2.5 bg-campus-navy hover:bg-campus-navy-dark text-white text-sm font-medium rounded-lg transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-campus-blue focus:ring-offset-2"
+          className="mt-5 px-5 py-2.5 bg-campus-navy hover:bg-campus-navy-dark text-white text-sm font-medium rounded-lg transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-campus-blue focus-visible:ring-offset-2"
         >
           {currentUser ? 'Ganti ke Akun Admin' : 'Sign In Admin Middleman'}
         </button>
@@ -192,7 +192,7 @@ export function AdminTriageView({
                   setActiveTab('items');
                   setAdminNote('');
                 }}
-                className={`py-1.5 px-2 text-xs font-medium rounded-md transition-colors whitespace-nowrap cursor-pointer focus:outline-none focus:ring-2 focus:ring-campus-blue ${
+                className={`py-1.5 px-2 text-xs font-medium rounded-md transition-colors whitespace-nowrap cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-campus-blue ${
                   activeTab === 'items'
                     ? 'bg-white text-campus-navy shadow-sm font-semibold'
                     : 'text-slate-600 hover:text-slate-900'
@@ -206,7 +206,7 @@ export function AdminTriageView({
                   setActiveTab('claims');
                   setAdminNote('');
                 }}
-                className={`py-1.5 px-2 text-xs font-medium rounded-md transition-colors whitespace-nowrap cursor-pointer focus:outline-none focus:ring-2 focus:ring-campus-blue ${
+                className={`py-1.5 px-2 text-xs font-medium rounded-md transition-colors whitespace-nowrap cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-campus-blue ${
                   activeTab === 'claims'
                     ? 'bg-white text-campus-navy shadow-sm font-semibold'
                     : 'text-slate-600 hover:text-slate-900'
@@ -217,7 +217,7 @@ export function AdminTriageView({
               <button
                 type="button"
                 onClick={() => setActiveTab('history')}
-                className={`py-1.5 px-2 text-xs font-medium rounded-md transition-colors whitespace-nowrap cursor-pointer focus:outline-none focus:ring-2 focus:ring-campus-blue ${
+                className={`py-1.5 px-2 text-xs font-medium rounded-md transition-colors whitespace-nowrap cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-campus-blue ${
                   activeTab === 'history'
                     ? 'bg-white text-campus-navy shadow-sm font-semibold'
                     : 'text-slate-600 hover:text-slate-900'
