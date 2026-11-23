@@ -1,10 +1,13 @@
 import type { NextFunction, Request, Response } from 'express';
-import { and, eq, gt } from 'drizzle-orm';
+import { and, eq, gt, lte } from 'drizzle-orm';
 import { db, ensureDatabaseReady } from '../db/index.ts';
 import { sessions, users } from '../db/schema.ts';
 import { hashSessionToken, parseCookies } from '../db/auth-crypto.ts';
 
 export const SESSION_COOKIE_NAME = 'campusfind_session';
+export const STUDENT_SESSION_MAX_AGE_MS = 15 * 60 * 1000; // 15 menit untuk mahasiswa/pengguna biasa
+export const ADMIN_SESSION_MAX_AGE_MS = 30 * 60 * 1000;   // 30 menit khusus untuk akun admin
+export const SESSION_MAX_AGE_MS = STUDENT_SESSION_MAX_AGE_MS;
 
 export interface AuthUser {
   id: number;
@@ -44,6 +47,7 @@ export async function resolveSessionUser(req: AuthRequest): Promise<AuthUser | n
       email: users.email,
       fullName: users.fullName,
       role: users.role,
+      expiresAt: sessions.expiresAt,
     })
     .from(sessions)
     .innerJoin(users, eq(sessions.userId, users.id))
@@ -53,6 +57,25 @@ export async function resolveSessionUser(req: AuthRequest): Promise<AuthUser | n
   if (!rows.length) return null;
 
   const row = rows[0];
+
+  const maxAgeMs = row.role === 'admin' ? ADMIN_SESSION_MAX_AGE_MS : STUDENT_SESSION_MAX_AGE_MS;
+  // Sliding expiration: jika tersisa < (maxAgeMs - 2 menit) dan ada request aktif, perpanjang
+  const remainingMs = row.expiresAt.getTime() - now.getTime();
+  if (remainingMs > 0 && remainingMs < maxAgeMs - 2 * 60 * 1000) {
+    const newExpiresAt = new Date(Date.now() + maxAgeMs);
+    void db
+      .update(sessions)
+      .set({ expiresAt: newExpiresAt })
+      .where(eq(sessions.tokenHash, tokenHash))
+      .catch((err) => console.error('Gagal memperpanjang sesi:', err));
+  }
+
+  // Bersihkan sesi kedaluwarsa secara berkala
+  void db
+    .delete(sessions)
+    .where(lte(sessions.expiresAt, now))
+    .catch(() => {});
+
   req.sessionTokenHash = tokenHash;
   req.user = {
     id: row.userId,

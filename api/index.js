@@ -32181,6 +32181,8 @@ async function seedInitialDataIfEmpty() {
 
 // src/middleware/auth.ts
 var SESSION_COOKIE_NAME = "campusfind_session";
+var STUDENT_SESSION_MAX_AGE_MS = 15 * 60 * 1e3;
+var ADMIN_SESSION_MAX_AGE_MS = 30 * 60 * 1e3;
 function extractSessionToken(req) {
   const authHeader = req.headers.authorization;
   if (authHeader && authHeader.startsWith("Bearer ")) {
@@ -32201,10 +32203,19 @@ async function resolveSessionUser(req) {
     nim: users.nim,
     email: users.email,
     fullName: users.fullName,
-    role: users.role
+    role: users.role,
+    expiresAt: sessions.expiresAt
   }).from(sessions).innerJoin(users, eq(sessions.userId, users.id)).where(and(eq(sessions.tokenHash, tokenHash), gt(sessions.expiresAt, now))).limit(1);
   if (!rows.length) return null;
   const row = rows[0];
+  const maxAgeMs = row.role === "admin" ? ADMIN_SESSION_MAX_AGE_MS : STUDENT_SESSION_MAX_AGE_MS;
+  const remainingMs = row.expiresAt.getTime() - now.getTime();
+  if (remainingMs > 0 && remainingMs < maxAgeMs - 2 * 60 * 1e3) {
+    const newExpiresAt = new Date(Date.now() + maxAgeMs);
+    void db.update(sessions).set({ expiresAt: newExpiresAt }).where(eq(sessions.tokenHash, tokenHash)).catch((err) => console.error("Gagal memperpanjang sesi:", err));
+  }
+  void db.delete(sessions).where(lte(sessions.expiresAt, now)).catch(() => {
+  });
   req.sessionTokenHash = tokenHash;
   req.user = {
     id: row.userId,
@@ -32271,12 +32282,14 @@ var app = (0, import_express.default)();
 app.set("trust proxy", 1);
 var PORT = 3e3;
 app.use(import_express.default.json({ limit: "6mb" }));
-app.use((req, _res, next) => {
-  if (req.url && !req.url.startsWith("/api") && !req.url.startsWith("/src")) {
-    req.url = `/api${req.url.startsWith("/") ? "" : "/"}${req.url}`;
-  }
-  next();
-});
+if (process.env.VERCEL) {
+  app.use((req, _res, next) => {
+    if (req.url && !req.url.startsWith("/api")) {
+      req.url = `/api${req.url.startsWith("/") ? "" : "/"}${req.url}`;
+    }
+    next();
+  });
+}
 app.use("/src/assets", import_express.default.static(path.resolve(process.cwd(), "src/assets")));
 app.use("/api", async (_req, res, next) => {
   try {
@@ -32287,13 +32300,13 @@ app.use("/api", async (_req, res, next) => {
     res.status(503).json({ error: "Database sedang disiapkan, silakan coba sesaat lagi." });
   }
 });
-function setSessionCookie(req, res, rawToken) {
+function setSessionCookie(req, res, rawToken, maxAgeMs = STUDENT_SESSION_MAX_AGE_MS) {
   const isHttps = req.secure || req.headers["x-forwarded-proto"] === "https";
   res.cookie(SESSION_COOKIE_NAME, rawToken, {
     httpOnly: true,
     sameSite: isHttps ? "none" : "lax",
     secure: isHttps,
-    maxAge: 7 * 24 * 60 * 60 * 1e3,
+    maxAge: maxAgeMs,
     path: "/"
   });
 }
@@ -32309,6 +32322,15 @@ function clearSessionCookie(req, res) {
 app.get("/api/auth/me", async (req, res) => {
   try {
     const user = await resolveSessionUser(req);
+    if (user) {
+      const rawToken = extractSessionToken(req);
+      if (rawToken) {
+        const maxAgeMs = user.role === "admin" ? ADMIN_SESSION_MAX_AGE_MS : STUDENT_SESSION_MAX_AGE_MS;
+        setSessionCookie(req, res, rawToken, maxAgeMs);
+      }
+    } else {
+      clearSessionCookie(req, res);
+    }
     return res.json({ user: user || null });
   } catch (error) {
     console.error("Failed to resolve current user:", error);
@@ -32348,14 +32370,14 @@ app.post("/api/auth/register", async (req, res) => {
       role: users.role
     });
     const rawToken = generateSessionToken();
-    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1e3);
+    const expiresAt = new Date(Date.now() + STUDENT_SESSION_MAX_AGE_MS);
     await db.insert(sessions).values({
       tokenHash: hashSessionToken(rawToken),
       userId: created.id,
       expiresAt
     });
     scheduleSnapshotSave();
-    setSessionCookie(req, res, rawToken);
+    setSessionCookie(req, res, rawToken, STUDENT_SESSION_MAX_AGE_MS);
     return res.status(201).json({
       user: {
         id: created.id,
@@ -32385,14 +32407,15 @@ app.post("/api/auth/login", async (req, res) => {
     }
     const account = found[0];
     const rawToken = generateSessionToken();
-    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1e3);
+    const maxAgeMs = account.role === "admin" ? ADMIN_SESSION_MAX_AGE_MS : STUDENT_SESSION_MAX_AGE_MS;
+    const expiresAt = new Date(Date.now() + maxAgeMs);
     await db.insert(sessions).values({
       tokenHash: hashSessionToken(rawToken),
       userId: account.id,
       expiresAt
     });
     scheduleSnapshotSave();
-    setSessionCookie(req, res, rawToken);
+    setSessionCookie(req, res, rawToken, maxAgeMs);
     return res.json({
       user: {
         id: account.id,

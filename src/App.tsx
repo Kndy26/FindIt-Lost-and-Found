@@ -4,10 +4,23 @@ import { AnimatePresence, motion } from 'motion/react';
 import { getCurrentUser, logoutAccount } from './lib/api.ts';
 import type { MyItem, User } from './types.ts';
 import { AuthModal } from './components/AuthModal.tsx';
+import { SessionTimeoutModal } from './components/SessionTimeoutModal.tsx';
 import { CatalogView } from './components/CatalogView.tsx';
 import { ReportFormView } from './components/ReportFormView.tsx';
 import { MyReportsView } from './components/MyReportsView.tsx';
 import { AdminTriageView } from './components/AdminTriageView.tsx';
+import {
+  STUDENT_SESSION_TIMEOUT_MS,
+  ADMIN_SESSION_TIMEOUT_MS,
+  SESSION_WARNING_MS,
+  LAST_ACTIVE_KEY,
+  getSessionTimeoutMs,
+  recordActivity,
+  clearSessionActivity,
+  getLastActiveTime,
+  isSessionExpired,
+  getIdleDurationMs,
+} from './lib/sessionManager.ts';
 
 type ActiveView = 'catalog' | 'report' | 'my-reports' | 'admin';
 
@@ -18,6 +31,8 @@ export default function App() {
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<MyItem | null>(null);
   const [toast, setToast] = useState<{ message: string; variant: 'success' | 'error' } | null>(null);
+  const [warningModalOpen, setWarningModalOpen] = useState(false);
+  const [remainingSeconds, setRemainingSeconds] = useState(120);
 
   const showToast = (message: string, variant: 'success' | 'error' = 'success') => {
     setToast({ message, variant });
@@ -33,8 +48,27 @@ export default function App() {
     void (async () => {
       try {
         const user = await getCurrentUser();
-        setCurrentUser(user);
+        if (user) {
+          const timeoutMs = getSessionTimeoutMs(user.role);
+          if (isSessionExpired(timeoutMs)) {
+            clearSessionActivity();
+            await logoutAccount();
+            setCurrentUser(null);
+            showToast(
+              user.role === 'admin'
+                ? 'Sesi Admin sebelumnya telah berakhir karena tidak ada aktivitas selama 30 menit.'
+                : 'Sesi sebelumnya telah berakhir karena tidak ada aktivitas selama 15 menit.'
+            );
+            return;
+          }
+          recordActivity();
+          setCurrentUser(user);
+        } else {
+          clearSessionActivity();
+          setCurrentUser(null);
+        }
       } catch {
+        clearSessionActivity();
         setCurrentUser(null);
       } finally {
         setAuthLoading(false);
@@ -42,19 +76,113 @@ export default function App() {
     })();
   }, []);
 
-  const handleLogout = async () => {
+  const handleLogout = async (isTimeout = false) => {
+    const wasAdmin = currentUser?.role === 'admin';
     try {
       await logoutAccount();
+    } catch {
+      // Abaikan jika jaringan gagal
+    } finally {
+      clearSessionActivity();
       setCurrentUser(null);
       setEditingItem(null);
+      setWarningModalOpen(false);
       if (activeView === 'admin' || activeView === 'my-reports') {
         setActiveView('catalog');
       }
-      showToast('Anda telah keluar dari sesi akun.');
-    } catch {
-      showToast('Gagal keluar dari sesi.', 'error');
+      if (isTimeout) {
+        showToast(
+          wasAdmin
+            ? 'Sesi Admin Anda telah berakhir karena tidak ada aktivitas selama 30 menit. Silakan login kembali.'
+            : 'Sesi Anda telah berakhir karena tidak ada aktivitas selama 15 menit. Silakan login kembali.'
+        );
+      } else {
+        showToast('Anda telah keluar dari sesi akun.');
+      }
     }
   };
+
+  const handleStayLoggedIn = () => {
+    recordActivity();
+    setWarningModalOpen(false);
+    void getCurrentUser();
+  };
+
+  useEffect(() => {
+    if (!currentUser) {
+      setWarningModalOpen(false);
+      return;
+    }
+
+    if (getLastActiveTime() === null) {
+      recordActivity();
+    }
+
+    const timeoutMs = getSessionTimeoutMs(currentUser.role);
+
+    let lastRecorded = Date.now();
+    const handleUserActivity = () => {
+      if (warningModalOpen) return;
+      const now = Date.now();
+      if (now - lastRecorded > 5000) {
+        lastRecorded = now;
+        recordActivity();
+      }
+    };
+
+    const activityEvents = ['mousedown', 'keydown', 'scroll', 'touchstart', 'click'];
+    for (const ev of activityEvents) {
+      window.addEventListener(ev, handleUserActivity, { passive: true });
+    }
+
+    const intervalId = window.setInterval(() => {
+      const idle = getIdleDurationMs();
+      if (idle >= timeoutMs) {
+        setWarningModalOpen(false);
+        void handleLogout(true);
+      } else if (idle >= timeoutMs - SESSION_WARNING_MS) {
+        const remainingMs = Math.max(0, timeoutMs - idle);
+        setRemainingSeconds(Math.ceil(remainingMs / 1000));
+        setWarningModalOpen(true);
+      } else {
+        setWarningModalOpen(false);
+      }
+    }, 1000);
+
+    const handleVisibilityOrFocus = () => {
+      if (document.visibilityState === 'visible') {
+        if (isSessionExpired(timeoutMs)) {
+          setWarningModalOpen(false);
+          void handleLogout(true);
+        }
+      }
+    };
+
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === LAST_ACTIVE_KEY) {
+        if (!e.newValue) {
+          setCurrentUser(null);
+          setWarningModalOpen(false);
+        } else {
+          setWarningModalOpen(false);
+        }
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityOrFocus);
+    window.addEventListener('focus', handleVisibilityOrFocus);
+    window.addEventListener('storage', handleStorageChange);
+
+    return () => {
+      for (const ev of activityEvents) {
+        window.removeEventListener(ev, handleUserActivity);
+      }
+      clearInterval(intervalId);
+      document.removeEventListener('visibilitychange', handleVisibilityOrFocus);
+      window.removeEventListener('focus', handleVisibilityOrFocus);
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, [currentUser, warningModalOpen]);
 
   const navItems: { id: ActiveView; label: string }[] = [
     { id: 'catalog', label: 'Catalog' },
@@ -241,10 +369,19 @@ export default function App() {
         </div>
       </footer>
 
+      <SessionTimeoutModal
+        open={warningModalOpen}
+        remainingSeconds={remainingSeconds}
+        role={currentUser?.role}
+        onStayLoggedIn={handleStayLoggedIn}
+        onLogoutNow={() => void handleLogout(false)}
+      />
+
       <AuthModal
         open={authModalOpen}
         onClose={() => setAuthModalOpen(false)}
         onSuccess={(user, message) => {
+          recordActivity();
           setCurrentUser(user);
           showToast(message);
           if (user.role === 'admin') {
